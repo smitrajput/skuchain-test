@@ -9,94 +9,144 @@
     (click)="add(heroName.value); heroName.value = ''"
     type="button"
   >
-    Add
+    Get Forecast
   </button>
 </form>
+
+<br />
+<br />
+<div class="center">
+  <h2>Forecast for the next 5 days</h2>
+</div>
+<br />
+<br />
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
+  <ng-container matColumnDef="day">
+    <th mat-header-cell *matHeaderCellDef>Day</th>
+    <td mat-cell *matCellDef="let element">{{ element.day }}</td>
+  </ng-container>
   <!-- Position Column -->
-  <ng-container matColumnDef="summary">
-    <th mat-header-cell *matHeaderCellDef>summary</th>
-    <td mat-cell *matCellDef="let element">{{ element[summary] }}</td>
+
+  <ng-container matColumnDef="icon">
+    <th mat-header-cell *matHeaderCellDef>Summary</th>
+    <td mat-cell *matCellDef="let element">{{ element.icon }}</td>
   </ng-container>
 
   <!-- Name Column -->
   <ng-container matColumnDef="humidity">
-    <th mat-header-cell *matHeaderCellDef>humidity</th>
-    <td mat-cell *matCellDef="let element">{{ element[humidity] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Humidity [0, 1]</th>
+    <td mat-cell *matCellDef="let element">{{ element.humidity }}</td>
   </ng-container>
 
   <!-- Weight Column -->
   <ng-container matColumnDef="windSpeed">
-    <th mat-header-cell *matHeaderCellDef>windSpeed</th>
-    <td mat-cell *matCellDef="let element">{{ element[windSpeed] }}</td>
-  </ng-container>
-
-  <!-- Symbol Column -->
-  <ng-container matColumnDef="windGust">
-    <th mat-header-cell *matHeaderCellDef>windGust</th>
-    <td mat-cell *matCellDef="let element">{{ element[windGust] }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="windGustTime">
-    <th mat-header-cell *matHeaderCellDef>windGustTime</th>
-    <td mat-cell *matCellDef="let element">{{ element[windGustTime] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Wind Speed (miles/hr)</th>
+    <td mat-cell *matCellDef="let element">{{ element.windSpeed }}</td>
   </ng-container>
 
   <ng-container matColumnDef="cloudCover">
-    <th mat-header-cell *matHeaderCellDef>cloudCover</th>
-    <td mat-cell *matCellDef="let element">{{ element[cloudCover] }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="dewPoint">
-    <th mat-header-cell *matHeaderCellDef>dewPoint</th>
-    <td mat-cell *matCellDef="let element">{{ element[dewPoint] }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="icon">
-    <th mat-header-cell *matHeaderCellDef>icon</th>
-    <td mat-cell *matCellDef="let element">{{ element[icon] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Cloud Cover [0,1]</th>
+    <td mat-cell *matCellDef="let element">{{ element.cloudCover }}</td>
   </ng-container>
 
   <ng-container matColumnDef="precipAccumulation">
-    <th mat-header-cell *matHeaderCellDef>precipAccumulation</th>
+    <th mat-header-cell *matHeaderCellDef>Precip Accumulation (inches)</th>
     <td mat-cell *matCellDef="let element">
-      {{ element[precipAccumulation] }}
+      {{ element.precipAccumulation }}
     </td>
   </ng-container>
 
   <ng-container matColumnDef="precipIntensity">
-    <th mat-header-cell *matHeaderCellDef>precipIntensity</th>
-    <td mat-cell *matCellDef="let element">{{ element[precipIntensity] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Precip Intensity (inches/hour)</th>
+    <td mat-cell *matCellDef="let element">{{ element.precipIntensity }}</td>
   </ng-container>
 
   <ng-container matColumnDef="precipProbability">
-    <th mat-header-cell *matHeaderCellDef>precipProbability</th>
-    <td mat-cell *matCellDef="let element">{{ element[precipProbability] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Precip Probability (0,1)</th>
+    <td mat-cell *matCellDef="let element">{{ element.precipProbability }}</td>
   </ng-container>
 
   <ng-container matColumnDef="precipType">
-    <th mat-header-cell *matHeaderCellDef>precipType</th>
-    <td mat-cell *matCellDef="let element">{{ element[precipType] }}</td>
+    <th mat-header-cell *matHeaderCellDef>Precip Type</th>
+    <td mat-cell *matCellDef="let element">{{ element.precipType }}</td>
   </ng-container>
 
-  <ng-container matColumnDef="apparentTemperatureLow">
-    <th mat-header-cell *matHeaderCellDef>apparentTemperatureLow</th>
+  <ng-container matColumnDef="apparentTemperatureHigh">
+    <th mat-header-cell *matHeaderCellDef>Apparent Temp High (℉)</th>
     <td mat-cell *matCellDef="let element">
-      {{ element[apparentTemperatureLow] }}
+      {{ element.apparentTemperatureHigh }}
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="apparentTemperatureMin">
-    <th mat-header-cell *matHeaderCellDef>Symbol</th>
+  <ng-container matColumnDef="apparentTemperatureLow">
+    <th mat-header-cell *matHeaderCellDef>Apparent Temp Low (℉)</th>
     <td mat-cell *matCellDef="let element">
-      {{ element[apparentTemperatureMin] }}
+      {{ element.apparentTemperatureLow }}
     </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+
+<br />
+<br />
+
+<div class="center">
+  <h3>Legend</h3>
+</div>
+<ol>
+  <li>Day: day 1 represents tomorrow, day 2 is day after tomorrow, etc.</li>
+  <li>
+    Summary: can be one of 'clear-day', 'clear-night', 'rain', 'snow', 'sleet',
+    'wind', 'fog', 'cloudy', 'partly-cloudy-day', or 'partly-cloudy-night'
+  </li>
+  <li>Humidity: The relative humidity, between 0 and 1, inclusive.</li>
+  <li>Wind Speed: The wind speed in miles per hour.</li>
+  <li>
+    Cloud Cover: The percentage of sky occluded by clouds, between 0 and 1,
+    inclusive.
+  </li>
+  <li>
+    Precip Accumulation: The amount of snowfall accumulation expected to occur
+    (over the hour or day, respectively), in inches. (If no snowfall is
+    expected, this property will not be defined.)
+  </li>
+  <li>
+    Precip Intensity: The intensity (in inches of liquid water per hour) of
+    precipitation occurring at the given time. This value is conditional on
+    probability (that is, assuming any precipitation occurs at all).
+  </li>
+  <li>
+    Precip Probability: The probability of precipitation occurring, between 0
+    and 1, inclusive.
+  </li>
+  <li>
+    Precip Type: The type of precipitation occurring at the given time. If
+    defined, this property will have one of the following values: "rain",
+    "snow", or "sleet" (which refers to each of freezing rain, ice pellets, and
+    “wintery mix”). (If precipIntensity is zero, then this property will not be
+    defined. Additionally, due to the lack of data in our sources, historical
+    precipType information is usually estimated, rather than observed.)
+  </li>
+  <li>
+    Apparent Temp High: The daytime high apparent(feels like) temperature.
+  </li>
+  <li>
+    Apparent Temp Low: The overnight low apparent(feels like) temperature.
+  </li>
+</ol>
+
+<br />
+<br />
+<div class="center">
+  <h2>Business</h2>
+</div>
+<h3>The best day to sell an Umbrella: Day {{ index }}</h3>
+<h3>The best day to sell a Jacket:</h3>
+<br />
+<br />
