@@ -62,7 +62,6 @@ export class WeatherComponent implements OnInit {
           this.long = res["features"][0].center[0];
           this.lat = res["features"][0].center[1];
           this.place_name = res["features"][0].place_name;
-          console.log("RESCOORDI", res);
           this.getWeatherInfo();
         },
         (err) => {
@@ -156,7 +155,6 @@ export class WeatherComponent implements OnInit {
         this.indexU = i + 1;
       }
     }
-    console.log(this.uArr);
   }
 
   //Summary: 'snow: 10', 'sleet: 8', 'wind: 5'
