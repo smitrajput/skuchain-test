@@ -17,7 +17,12 @@ export class WeatherComponent implements OnInit {
   foo: any;
   dataSource: any;
   arr: any;
-  index: any;
+  indexU: any;
+  indexJ: any;
+  umbrellaNum: number;
+  jacketNum: number;
+  uArr: any = [];
+  jArr: any = [];
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +37,6 @@ export class WeatherComponent implements OnInit {
     "precipAccumulation",
     "precipIntensity",
     "precipProbability",
-    "precipType",
     "apparentTemperatureHigh",
     "apparentTemperatureLow",
   ];
@@ -53,7 +57,6 @@ export class WeatherComponent implements OnInit {
           this.city +
           ".json?access_token=pk.eyJ1Ijoic21pdC1yYWpwdXQiLCJhIjoiY2sxa21lYnZnMGNmbzNpcGU3Z2Jrd2wydiJ9.d6VE1uaNfh84GSCllCofng"
       )
-      // console.log(this.foo);
       .subscribe(
         (res) => {
           this.long = res["features"][0].center[0];
@@ -93,7 +96,6 @@ export class WeatherComponent implements OnInit {
             precipAccumulation: 0,
             precipIntensity: 0,
             precipProbability: 0,
-            precipType: 0,
             apparentTemperatureHigh: 0,
             apparentTemperatureLow: 0,
           };
@@ -108,7 +110,6 @@ export class WeatherComponent implements OnInit {
             obj.precipIntensity = response["daily"]["data"][i].precipIntensity;
             obj.precipProbability =
               response["daily"]["data"][i].precipProbability;
-            obj.precipType = response["daily"]["data"][i].precipType;
             obj.apparentTemperatureHigh =
               response["daily"]["data"][i].apparentTemperatureHigh;
             obj.apparentTemperatureLow =
@@ -118,37 +119,67 @@ export class WeatherComponent implements OnInit {
         }
         meta.dataSource = new MatTableDataSource(meta.arr);
         meta.findUmbrellaDay();
+        meta.findJacketDay();
       }
     );
   }
 
-  // Summary: 'clear-day', 'clear-night', 'rain: 10', 'snow: 7', 'sleet: 6', 'wind', 'fog', 'cloudy: 5', 'partly-cloudy-day: 3', or 'partly-cloudy-night: 3'
+  // Summary: 'clear-day: 5', 'clear-night', 'rain: 10', 'snow: 7', 'sleet: 6', 'wind', 'fog', 'cloudy: 4', 'partly-cloudy-day: 3', or 'partly-cloudy-night: 3'
   findUmbrellaDay() {
-    console.log(this.arr);
-    let umbrellaNum,
-      max = -1;
+    this.umbrellaNum = 0;
+    let max = -1;
+    this.uArr = [];
+    this.indexU = 0;
     for (let i = 0; i < 5; ++i) {
-      umbrellaNum = 0;
+      this.umbrellaNum = 0;
       let day = this.arr[i];
-      if (day.icon == "rain") umbrellaNum += 10;
-      else if (day.icon == "snow") umbrellaNum += 7;
-      else if (day.icon == "sleet") umbrellaNum += 6;
-      else if (day.icon == "cloudy") umbrellaNum += 5;
+      if (day.icon == "rain") this.umbrellaNum += 10;
+      else if (day.icon == "snow") this.umbrellaNum += 7;
+      else if (day.icon == "sleet") this.umbrellaNum += 6;
+      else if (day.icon == "clear-day") this.umbrellaNum += 5;
+      else if (day.icon == "cloudy") this.umbrellaNum += 4;
       else if (
         day.icon == "partly-cloudy-day" ||
         day.icon == "partly-cloudy-night"
       )
-        umbrellaNum += 3;
-      umbrellaNum += day.humidity;
-      umbrellaNum += day.cloudCover;
-      umbrellaNum += day.precipAccumulation;
-      umbrellaNum += day.precipIntensity;
-      umbrellaNum += day.precipProbability;
-      umbrellaNum += day.apparentTemperatureHigh;
+        this.umbrellaNum += 3;
+      if (day.humidity > 0) this.umbrellaNum *= day.humidity;
+      if (day.cloudCover > 0) this.umbrellaNum *= day.cloudCover;
+      if (day.precipAccumulation) this.umbrellaNum += day.precipAccumulation;
+      this.umbrellaNum += day.precipIntensity;
+      if (day.precipProbability > 0) this.umbrellaNum *= day.precipProbability;
+      this.umbrellaNum += day.apparentTemperatureHigh;
+      this.uArr.push(this.umbrellaNum);
 
-      if (umbrellaNum > max) {
-        max = umbrellaNum;
-        this.index = i + 1;
+      if (this.umbrellaNum > max) {
+        max = this.umbrellaNum;
+        this.indexU = i + 1;
+      }
+    }
+    console.log(this.uArr);
+  }
+
+  //Summary: 'snow: 10', 'sleet: 8', 'wind: 5'
+  findJacketDay() {
+    console.log(this.arr);
+    this.jacketNum = 0;
+    let max = -1000000;
+    this.jArr = [];
+    this.indexJ = 0;
+    for (let i = 0; i < 5; ++i) {
+      this.jacketNum = 0;
+      let day = this.arr[i];
+      if (day.icon == "snow") this.jacketNum += 10;
+      else if (day.icon == "sleet") this.jacketNum += 8;
+      else if (day.icon == "wind") this.jacketNum += 5;
+      if (day.precipAccumulation) this.jacketNum += day.precipAccumulation;
+      this.jacketNum -= day.apparentTemperatureLow;
+      this.jacketNum += day.windSpeed;
+
+      this.jArr.push(this.jacketNum);
+      if (this.jacketNum > max) {
+        max = this.jacketNum;
+        this.indexJ = i + 1;
       }
     }
   }
